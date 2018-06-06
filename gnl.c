@@ -1,77 +1,97 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   gnl.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kmaputla <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/06/06 08:58:48 by kmaputla          #+#    #+#             */
+/*   Updated: 2018/06/06 17:13:44 by kmaputla         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
-#define BUFF_SIZE 32
-/*
-static	char	reader(int fd)
-{
-	char	*swap1;
-	char	*swap2;
+#include "libft.h"
+#define BUFF_SIZE 32 
 
-	read(fd, */
-	
-
-static	int	read_line(int const fd, char **line)
+static	char	*read_line(int fd, char *rtn_str, int *i)
 {
-	int				i;
+	static	char	buf[1 + BUFF_SIZE];
 	static	int		index;
 	static	int		place;
-	static	int		startrun;
-	static	char	buf[1 + BUFF_SIZE];
+
+	ft_strclr(rtn_str);
+	free(rtn_str);
+	rtn_str = NULL;
+	if (index == place)
+	{
+		place = read(fd, buf, BUFF_SIZE);;
+	}
+	while (buf[index] != '\n' && buf[index] != '\0')
+		index++;
+	if (index == place)
+	{
+		index = 0;
+		place = 0;
+		rtn_str = ft_strdup(buf);
+		ft_bzero(buf, BUFF_SIZE);
+	}
+	else if (index < place && buf[index] == '\n')
+	{
+		*i = 1;
+		rtn_str = ft_strnew(index);
+		ft_memcpy(rtn_str, buf, index++);
+		index++;
+	}
+	return (rtn_str);
+}
+
+int				get_next_line(int const fd, char **line)
+{
+	char	*swap;
+	char	*hold;
+	int		run;
+	int		i;
 
 	i = 0;
-	if (startrun == 0)
-	{
-		place = 0;
-		startrun = read(fd, buf, BUFF_SIZE);
-		index = startrun;
-	}
-	if (!((*line) = (char *)malloc(sizeof(char) * BUFF_SIZE)))
-		return (0);
-	while (startrun > 0 && buf[place] != '\n')
-	{
-		(*line)[i] = buf[place];
-		i++;
-		startrun--;
-		place++;
-	}
-	if (buf[place] == '\n' && startrun > 0)
-	{
-		place++;
-		startrun--;
-		return (startrun);
-	}
-	if (startrun == 0 && index == BUFF_SIZE)
-	{
-		return (1);
-	}
-	return (0);
-}
-
-int get_next_line(int const fd, char **line)
-{
-	char
-	return (re
-}
-
-int	main()
-{
-	int file;
-	int i = 1;
-	char *hold;
-
+	run = 0;
+	swap = NULL;
 	hold = NULL;
-	file = open("test.txt", O_RDONLY);
+	while (i != 1)
+	{
+		run = 1;
+		hold = read_line(fd, hold, &i);
+		if (hold != NULL)
+			 swap = ft_strjoin(swap, hold);
+	}
+	(*line) = swap;
+	return (i);
+}
+
+int				main(void)
+{
+	int		file;
+	int		i;
+	char	*hold;
+
+	i = 1;
+	hold = NULL;
+	file = open("new", O_RDONLY);
 	if (file == -1)
 	{
 		printf("fail");
 		return (0);
 	}
-	while (i)
+//	while (i)
 	{
 		i = get_next_line(file, &hold);
-		printf("%s ======== out \n", hold);
+		printf("---%s\n", hold);
+		i = get_next_line(file, &hold);
+		printf("--- %s\n", hold);
 	}
 	return (0);
 }
