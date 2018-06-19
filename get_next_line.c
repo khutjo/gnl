@@ -6,7 +6,7 @@
 /*   By: kmaputla <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 14:08:47 by kmaputla          #+#    #+#             */
-/*   Updated: 2018/06/18 17:21:25 by kmaputla         ###   ########.fr       */
+/*   Updated: 2018/06/19 14:05:01 by kmaputla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@ static	t_list	*search(t_list **str, size_t fd)
 static	int		join(t_list *hold, const int fd, char **line)
 {
 	char	*temp;
-	char	buf[1 + BUFF_SIZE];
+	char	*buf;
 	int		size;
 
 	size = 1;
 	temp = NULL;
 	if (hold->content == NULL)
 	{
-		ft_bzero(buf, BUFF_SIZE);
+		buf = ft_strnew(BUFF_SIZE);
 		size = read(fd, buf, BUFF_SIZE);
 		if ((*line) == NULL)
 			(*line) = ft_strdup(buf);
@@ -50,6 +50,7 @@ static	int		join(t_list *hold, const int fd, char **line)
 			free((*line));
 			(*line) = temp;
 		}
+		free(buf);
 	}
 	else
 	{
@@ -67,7 +68,7 @@ int				get_next_line(const int fd, char **line)
 
 	i = 1;
 	size = 1;
-	if (fd < 0 || !line)
+	if (fd < 0 || !line || BUFF_SIZE < 0)
 		return (-1);
 	(*line) = NULL;
 	hold = search(&save, (size_t)fd);

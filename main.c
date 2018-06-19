@@ -4,49 +4,34 @@
 
 int get_next_line(const int fd, char **line);
 
-int	main(void)
+int	main(int i, char **c)
 {
-	int		file1;
-	int		file2;
-	int		file3;
-	int		file4;
+	int		file[--i];
 	char	*hold1;
-	char	*hold2;
-	char	*hold3;
-	char	*hold4;
-	int j;
-	int i;
+	int		j;
+	int		p;
 
-	j = 1;
-	i = 1;
+	j = 0;
+	p = 1;
 	hold1 = NULL;
-	hold2 = NULL;
-	hold3 = NULL;
-	hold4 = NULL;
-	file1 = open("test1.txt", O_RDONLY);
-	file2 = open("test2.txt", O_RDONLY);
-	file3 = open("test3.txt", O_RDONLY);
-	file4 = open("test4.txt", O_RDONLY);
-	
-
-	while (j == 1)
+	printf("%d", i);
+	while (j < i)
 	{
-		j = get_next_line(file1,&hold1);
-		printf("%d======%s======\n",i++ , hold1);
-		j = get_next_line(file2,&hold2);
-		printf("%d======%s======\n",i++ , hold2);
-		j = get_next_line(file3,&hold3);
-		printf("%d======%s======\n",i++ , hold3);
-		j = get_next_line(file4,&hold4);
-		printf("%d======%s======\n",i++ , hold4);
-		free(hold1);
-		free(hold2);
-		free(hold3);
-		free(hold4);
+		file[j] = open(c[1+j], O_RDONLY);
+		j++;
 	}
-	close(file1);
-	close(file2);
-	close(file3);
-	close(file4);
+	j = 0;
+		while (p == 1)
+		{
+			p = get_next_line(file[j++],&hold1);
+			printf("======%s======\n", hold1);
+			free(hold1);
+			if (p == 0 && j < i)
+				p = 1;
+			if (j == i)
+				j = 0;
+		}
+	j = 0;
+	while (close(file[j++]));
 	return (0);
 }
